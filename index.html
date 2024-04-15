@@ -167,7 +167,7 @@
                                 return {
                                     fillColor: affordability ? colorScale(affordability).hex() : '#808080',
                                     fillOpacity: 0.7,
-                                    weight: 0,
+                                    weight: 1,
                                     color: 'white',
                                     dashArray: '3'
                                 };
@@ -177,7 +177,11 @@
                         // Add mouseover and mouseout events to the county layer
                         countyLayer.on('mouseover', function(e) {
                             var layer = e.target;
-                            var feature = layer.feature;
+                            layer.setStyle({
+                                weight: 2,
+                                color: 'black',
+                                dashArray: ''
+                            });
                         
                             var stateAbbreviations = {
                                 "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA",
@@ -193,10 +197,10 @@
                                 "56": "WY"
                             };
                         
-                            var countyFips = feature.properties.GEOID;
+                            var countyFips = layer.feature.properties.GEOID;
                             var affordability = affordabilityLookup[countyFips];
-                            var countyName = feature.properties.NAME;
-                            var stateFips = feature.properties.STATEFP;
+                            var countyName = layer.feature.properties.NAME;
+                            var stateFips = layer.feature.properties.STATEFP;
                             var stateAbbreviation = stateAbbreviations[stateFips];
                         
                             if (affordability) {
@@ -208,6 +212,8 @@
                         });
                         
                         countyLayer.on('mouseout', function(e) {
+                            var layer = e.target;
+                            countyLayer.resetStyle(layer);
                             infoContainer.style.display = 'none';
                         });
 
