@@ -127,21 +127,6 @@
                         results.data.forEach(function(row) {
                             affordabilityLookup[row.County] = parseFloat(row.Affordability);
                         });
-        
-                        // Add the GeoJSON layer to the map
-                        L.geoJSON(geojson, {
-                            style: function(feature) {
-                                var countyFips = feature.properties.GEOID;
-                                var affordability = affordabilityLookup[countyFips];
-                                return {
-                                    fillColor: affordability ? colorScale(affordability).hex() : '#808080',
-                                    fillOpacity: 0.7,
-                                    weight: 0,
-                                    color: 'white',
-                                    dashArray: '3'
-                                };
-                            }
-                        }).addTo(map);
 
                         // Load the states GeoJSON file
                         fetch('us-state-boundaries.geojson')
@@ -158,6 +143,22 @@
                                 }
                             }).addTo(map);
                         })
+                        
+                        // Add the county GeoJSON file
+                        L.geoJSON(geojson, {
+                            style: function(feature) {
+                                var countyFips = feature.properties.GEOID;
+                                var affordability = affordabilityLookup[countyFips];
+                                return {
+                                    fillColor: affordability ? colorScale(affordability).hex() : '#808080',
+                                    fillOpacity: 0.7,
+                                    weight: 0,
+                                    color: 'white',
+                                    dashArray: '3'
+                                };
+                            }
+                        }).addTo(map);
+                        
                         // Create a custom control for the info container
                         var info = L.control({ position: 'topright' });
 
