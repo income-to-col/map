@@ -143,6 +143,21 @@
                             }
                         }).addTo(map);
 
+                        // Load the states GeoJSON file
+                        fetch('us-state-boundaries.geojson')
+                            .then(response => response.json())
+                            .then(statesData => {
+                                // Add the state boundaries to the map
+                                L.geoJSON(statesData, {
+                                    style: function (feature) {
+                                        return {
+                                            color: 'black',
+                                            weight: 1,
+                                            fillOpacity: 0
+                                    };
+                                }
+                            }).addTo(map);
+                        }
                         // Create a custom control for the info container
                         var info = L.control({ position: 'topright' });
 
