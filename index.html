@@ -156,36 +156,6 @@
                                     color: 'white',
                                     dashArray: '3'
                                 };
-                            }
-                        }).addTo(map);
-                        
-                        // Create a custom control for the info container
-                        var info = L.control({ position: 'topright' });
-
-                        info.onAdd = function (map) {
-                            var div = L.DomUtil.create('div', 'info-container');
-                            div.innerHTML = '<div class="info-label">Income:COL</div><div class="info-value"></div>';
-                            return div;
-                        };
-
-                        info.addTo(map);
-
-                        // Get the info container element
-                        var infoContainer = document.querySelector('.info-container');
-                        var infoValue = infoContainer.querySelector('.info-value');
-
-                        // Add mouseover and mouseout events to the GeoJSON layer
-                        L.geoJSON(geojson, {
-                            style: function (feature) {
-                                var countyFips = feature.properties.GEOID;
-                                var affordability = affordabilityLookup[countyFips];
-                                return {
-                                    fillColor: affordability ? colorScale(affordability).hex() : '#808080',
-                                    fillOpacity: 0.7,
-                                    weight: 0, // Set the outline weight to 0
-                                    color: 'white',
-                                    dashArray: '3'
-                                };
                             },
                             onEachFeature: function (feature, layer) {
                                 layer.on({
@@ -208,7 +178,7 @@
                                         var countyName = feature.properties.NAME;
                                         var stateFips = feature.properties.STATEFP;
                                         var stateAbbreviation = stateAbbreviations[stateFips];
-
+                        
                                         if (affordability) {
                                             infoContainer.innerHTML = '<div class="info-label">' + countyName + ', ' + stateAbbreviation + '</div>' +
                                                                        '<div class="info-label">Income:COL</div>' +
@@ -222,6 +192,21 @@
                                 });
                             }
                         }).addTo(map);
+                        
+                        // Create a custom control for the info container
+                        var info = L.control({ position: 'topright' });
+
+                        info.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info-container');
+                            div.innerHTML = '<div class="info-label">Income:COL</div><div class="info-value"></div>';
+                            return div;
+                        };
+
+                        info.addTo(map);
+
+                        // Get the info container element
+                        var infoContainer = document.querySelector('.info-container');
+                        var infoValue = infoContainer.querySelector('.info-value');
 
                         var legend = L.control({ position: 'bottomright' });
 
