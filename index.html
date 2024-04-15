@@ -143,6 +143,21 @@
                                 }
                             }).addTo(map);
                         })
+
+                        // Create a custom control for the info container
+                        var info = L.control({ position: 'topright' });
+
+                        info.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info-container');
+                            div.innerHTML = '<div class="info-label">Income:COL</div><div class="info-value"></div>';
+                            return div;
+                        };
+
+                        info.addTo(map);
+
+                        // Get the info container element
+                        var infoContainer = document.querySelector('.info-container');
+                        var infoValue = infoContainer.querySelector('.info-value');
                         
                         // Add the county GeoJSON file
                         var countyLayer = L.geoJSON(geojson, {
@@ -195,21 +210,6 @@
                         countyLayer.on('mouseout', function(e) {
                             infoContainer.style.display = 'none';
                         });
-                                                
-                        // Create a custom control for the info container
-                        var info = L.control({ position: 'topright' });
-
-                        info.onAdd = function (map) {
-                            var div = L.DomUtil.create('div', 'info-container');
-                            div.innerHTML = '<div class="info-label">Income:COL</div><div class="info-value"></div>';
-                            return div;
-                        };
-
-                        info.addTo(map);
-
-                        // Get the info container element
-                        var infoContainer = document.querySelector('.info-container');
-                        var infoValue = infoContainer.querySelector('.info-value');
 
                         // Add color legend
                         var legend = L.control({ position: 'bottomright' });
