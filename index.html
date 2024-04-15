@@ -145,7 +145,7 @@
                         })
                         
                         // Add the county GeoJSON file
-                        L.geoJSON(geojson, {
+                        var countyLayer = L.geoJSON(geojson, {
                             style: function(feature) {
                                 var countyFips = feature.properties.GEOID;
                                 var affordability = affordabilityLookup[countyFips];
@@ -156,43 +156,46 @@
                                     color: 'white',
                                     dashArray: '3'
                                 };
-                            },
-                            onEachFeature: function (feature, layer) {
-                                layer.on({
-                                    mouseover: function (e) {
-                                        var stateAbbreviations = {
-                                            "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA",
-                                            "08": "CO", "09": "CT", "10": "DE", "11": "DC", "12": "FL",
-                                            "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN",
-                                            "19": "IA", "20": "KS", "21": "KY", "22": "LA", "23": "ME",
-                                            "24": "MD", "25": "MA", "26": "MI", "27": "MN", "28": "MS",
-                                            "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH",
-                                            "34": "NJ", "35": "NM", "36": "NY", "37": "NC", "38": "ND",
-                                            "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI",
-                                            "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT",
-                                            "50": "VT", "51": "VA", "53": "WA", "54": "WV", "55": "WI",
-                                            "56": "WY"
-                                        };
-                                        var countyFips = feature.properties.GEOID;
-                                        var affordability = affordabilityLookup[countyFips];
-                                        var countyName = feature.properties.NAME;
-                                        var stateFips = feature.properties.STATEFP;
-                                        var stateAbbreviation = stateAbbreviations[stateFips];
-                        
-                                        if (affordability) {
-                                            infoContainer.innerHTML = '<div class="info-label">' + countyName + ', ' + stateAbbreviation + '</div>' +
-                                                                       '<div class="info-label">Income:COL</div>' +
-                                                                       '<div class="info-value">' + affordability.toFixed(3) + '</div>';
-                                            infoContainer.style.display = 'block';
-                                        }
-                                    },
-                                    mouseout: function (e) {
-                                        infoContainer.style.display = 'none';
-                                    }
-                                });
                             }
                         }).addTo(map);
+
+                        // Add mouseover and mouseout events to the county layer
+                        countyLayer.on('mouseover', function(e) {
+                            var layer = e.target;
+                            var feature = layer.feature;
                         
+                            var stateAbbreviations = {
+                                "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA",
+                                "08": "CO", "09": "CT", "10": "DE", "11": "DC", "12": "FL",
+                                "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN",
+                                "19": "IA", "20": "KS", "21": "KY", "22": "LA", "23": "ME",
+                                "24": "MD", "25": "MA", "26": "MI", "27": "MN", "28": "MS",
+                                "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH",
+                                "34": "NJ", "35": "NM", "36": "NY", "37": "NC", "38": "ND",
+                                "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI",
+                                "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT",
+                                "50": "VT", "51": "VA", "53": "WA", "54": "WV", "55": "WI",
+                                "56": "WY"
+                            };
+                        
+                            var countyFips = feature.properties.GEOID;
+                            var affordability = affordabilityLookup[countyFips];
+                            var countyName = feature.properties.NAME;
+                            var stateFips = feature.properties.STATEFP;
+                            var stateAbbreviation = stateAbbreviations[stateFips];
+                        
+                            if (affordability) {
+                                infoContainer.innerHTML = '<div class="info-label">' + countyName + ', ' + stateAbbreviation + '</div>' +
+                                                           '<div class="info-label">Income:COL</div>' +
+                                                           '<div class="info-value">' + affordability.toFixed(3) + '</div>';
+                                infoContainer.style.display = 'block';
+                            }
+                        });
+                        
+                        countyLayer.on('mouseout', function(e) {
+                            infoContainer.style.display = 'none';
+                        });
+                                                
                         // Create a custom control for the info container
                         var info = L.control({ position: 'topright' });
 
@@ -208,6 +211,7 @@
                         var infoContainer = document.querySelector('.info-container');
                         var infoValue = infoContainer.querySelector('.info-value');
 
+                        // Add color legend
                         var legend = L.control({ position: 'bottomright' });
 
                         legend.onAdd = function (map) {
